@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Morse Flashlight</string>
+    <string name="main_button_toggle_flashlight">Toggle flashlight</string>
+    <string name="main_button_toggle_strobe">Toggle strobe</string>
+    <string name="main_button_toggle_sos">Toggle SOS</string>
+    <string name="flashing_speed">Flashing speed</string>
+</resources>
