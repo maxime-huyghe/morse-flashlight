@@ -23,11 +23,12 @@ public class FlashlightController {
 
     private static volatile int basetime = 200;
 
-    private Context context;
-    private CameraManager cameraManager;
+    private final Context context;
+    private final CameraManager cameraManager;
     private String cameraId;
 
     public FlashlightController(Context context) {
+        this.context = context;
         cameraManager = (CameraManager) context.getSystemService(CAMERA_SERVICE);
         try {
             cameraId = cameraManager.getCameraIdList()[0];
@@ -73,8 +74,10 @@ public class FlashlightController {
         if (!strobing) {
             strobing = true;
             runningFuture = new FutureTask<>(() -> {
+                //noinspection InfiniteLoopStatement
                 while (true) {
                     toggleFlashLight();
+                    //noinspection BusyWait
                     Thread.sleep(basetime);
                 }
             });
@@ -99,9 +102,11 @@ public class FlashlightController {
                         MorseCharacter.MorseImpulse.Long, MorseCharacter.MorseImpulse.Long, MorseCharacter.MorseImpulse.Long,
                         MorseCharacter.MorseImpulse.Short, MorseCharacter.MorseImpulse.Short, MorseCharacter.MorseImpulse.Short
                 );
+                //noinspection InfiniteLoopStatement
                 while (true) {
                     flashMorseCharacter(sos);
-                    Thread.sleep(basetime * 3);
+                    //noinspection BusyWait
+                    Thread.sleep(basetime * 3L);
                 }
             });
             executor.execute(runningFuture);
@@ -112,9 +117,16 @@ public class FlashlightController {
     }
 
     public void flashMorseString(List<MorseCharacter> characters) throws InterruptedException {
-        throw new Error("Unimplemented!");
+        for (int i = 0; i < characters.size(); ++i) {
+            flashMorseCharacter(characters.get(i).getImpulses());
+            if (i != characters.size() - 1) {
+                //noinspection BusyWait
+                Thread.sleep(basetime * 3L);
+            }
+        }
     }
 
+    @SuppressWarnings("BusyWait")
     public void flashMorseCharacter(List<MorseCharacter.MorseImpulse> impulses) throws InterruptedException {
         for (int i = 0; i < impulses.size(); ++i) {
             switch (impulses.get(i)) {
@@ -124,11 +136,11 @@ public class FlashlightController {
                     break;
                 case Long:
                     toggleFlashLight(true);
-                    Thread.sleep(basetime * 3);
+                    Thread.sleep(basetime * 3L);
                     break;
                 case Space:
                     toggleFlashLight(false);
-                    Thread.sleep(basetime * 3);
+                    Thread.sleep(basetime);
                     break;
             }
             toggleFlashLight(false);
@@ -138,7 +150,12 @@ public class FlashlightController {
         }
     }
 
-    public void cancelFutureIfRunning() {
+    public void turnOffCompletely() {
+        cancelFutureIfRunning();
+        toggleFlashLight(false);
+    }
+
+    private void cancelFutureIfRunning() {
         if (runningFuture != null && !runningFuture.isDone()) {
             runningFuture.cancel(true);
         }

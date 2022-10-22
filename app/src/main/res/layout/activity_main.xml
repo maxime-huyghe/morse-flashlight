@@ -47,5 +47,12 @@
             android:id="@+id/main_seek_flashing_speed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/main_button_flash_morse_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/main_btn_flash_morse_message"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
