@@ -5,6 +5,8 @@ import static android.content.Context.CAMERA_SERVICE;
 import android.content.Context;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
 
 import java.util.Arrays;
@@ -116,14 +118,28 @@ public class FlashlightController {
         }
     }
 
-    public void flashMorseString(List<MorseCharacter> characters) throws InterruptedException {
-        for (int i = 0; i < characters.size(); ++i) {
-            flashMorseCharacter(characters.get(i).getImpulses());
-            if (i != characters.size() - 1) {
-                //noinspection BusyWait
-                Thread.sleep(basetime * 3L);
+    public interface CharacterStartedFlashingListener {
+        void onCharacterStartedFlashing(int i);
+    }
+
+    public void flashMorseString(List<MorseCharacter> characters, CharacterStartedFlashingListener onCharacterStartedFlashing) throws InterruptedException {
+        cancelFutureIfRunning();
+        runningFuture = new FutureTask<>(() -> {
+            for (int i = 0; i < characters.size(); ++i) {
+                int finalI = i;
+                new Handler(Looper.getMainLooper())
+                        .post(
+                                () -> onCharacterStartedFlashing.onCharacterStartedFlashing(finalI)
+                        );
+                flashMorseCharacter(characters.get(i).getImpulses());
+                if (i != characters.size() - 1) {
+                    //noinspection BusyWait
+                    Thread.sleep(basetime * 3L);
+                }
             }
-        }
+            return null;
+        });
+        executor.execute(runningFuture);
     }
 
     @SuppressWarnings("BusyWait")

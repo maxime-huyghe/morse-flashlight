@@ -1,4 +1,4 @@
-package dev.huyghe.morseflashlight;
+package dev.huyghe.morseflashlight.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,9 @@ import android.widget.Button;
 import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import dev.huyghe.morseflashlight.FlashlightController;
+import dev.huyghe.morseflashlight.R;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
