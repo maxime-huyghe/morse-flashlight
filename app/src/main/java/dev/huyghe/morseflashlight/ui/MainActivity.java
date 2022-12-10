@@ -1,4 +1,4 @@
-package dev.huyghe.morseflashlight.activities;
+package dev.huyghe.morseflashlight.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,29 +8,30 @@ import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import dev.huyghe.morseflashlight.FlashlightController;
+import dagger.hilt.android.AndroidEntryPoint;
+import dev.huyghe.morseflashlight.databinding.ActivityMainBinding;
+import dev.huyghe.morseflashlight.domain.FlashlightController;
 import dev.huyghe.morseflashlight.R;
 
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         FlashlightController flashLightController = new FlashlightController(this);
 
-        Button btn_toggle_flashlight = findViewById(R.id.main_button_toggle_flashlight);
-        btn_toggle_flashlight.setOnClickListener(view -> flashLightController.toggleFlashLight());
+        binding.mainButtonToggleFlashlight.setOnClickListener(view -> flashLightController.toggleFlashLight());
 
-        Button btn_toggle_strobe = findViewById(R.id.main_button_toggle_strobe);
-        btn_toggle_strobe.setOnClickListener(view -> flashLightController.toggleStrobe());
+        binding.mainButtonToggleStrobe.setOnClickListener(view -> flashLightController.toggleStrobe());
 
-        Button btn_toggle_sos = findViewById(R.id.main_button_toggle_sos);
-        btn_toggle_sos.setOnClickListener(view -> flashLightController.toggleSOS());
+        binding.mainButtonToggleSos.setOnClickListener(view -> flashLightController.toggleSOS());
 
-        SeekBar seek_flashing_speed = findViewById(R.id.main_seek_flashing_speed);
+        SeekBar seek_flashing_speed = binding.mainSeekFlashingSpeed;
         seek_flashing_speed.setProgress(flashLightController.getFlashingSpeed());
         seek_flashing_speed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.main_button_flash_morse_message).setOnClickListener(view -> {
+        binding.mainButtonFlashMorseMessage.setOnClickListener(view -> {
             flashLightController.turnOffCompletely();
             startActivity(new Intent(this, MorseInputActivity.class));
         });

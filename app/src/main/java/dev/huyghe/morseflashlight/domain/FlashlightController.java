@@ -1,4 +1,4 @@
-package dev.huyghe.morseflashlight;
+package dev.huyghe.morseflashlight.domain;
 
 import static android.content.Context.CAMERA_SERVICE;
 

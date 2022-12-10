@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    android:orientation="vertical"
-    tools:context=".activities.MorseInputActivity">
+    tools:context=".ui.MorseInputActivity">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
-        android:labelFor="@id/morse_input_edit"
-        android:text="@string/morse_input_label_text_to_flash" />
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/morse_input_edit"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:autofillHints="none"
-        android:inputType="text">
-        <!--
-                android:inputType="textMultiLine"
-                android:lines="5"
-                android:minLines="1"
-        -->
-        <requestFocus />
-    </EditText>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:labelFor="@id/morse_input_edit"
+            android:text="@string/morse_input_label_text_to_flash" />
 
-    <Button
-        android:id="@+id/morse_input_button_flash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/morse_input_btn_flash" />
+        <EditText
+            android:id="@+id/morse_input_edit"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:autofillHints="none"
+            android:inputType="text">
+            <!--
+                    android:inputType="textMultiLine"
+                    android:lines="5"
+                    android:minLines="1"
+            -->
+            <requestFocus />
+        </EditText>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/morse_input_button_flash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/morse_input_btn_flash" />
+
+    </LinearLayout>
+</layout>
