@@ -4,7 +4,9 @@
     <string name="main_button_toggle_strobe">Toggle strobe</string>
     <string name="main_button_toggle_sos">Toggle SOS</string>
     <string name="flashing_speed">Flashing speed</string>
-    <string name="morse_input_label_text_to_flash">Text to flash</string>
-    <string name="main_btn_flash_morse_message">Flash morse message</string>
-    <string name="morse_input_btn_flash">Flash!</string>
+    <string name="morse_input_label_text_to_flash">Input you message:</string>
+    <string name="main_btn_flash_morse_message">Flash a message</string>
+    <string name="morse_input_btn_flash">Flash</string>
+    <string name="save_for_later">Save for later</string>
+    <string name="message_list_history">History:</string>
 </resources>

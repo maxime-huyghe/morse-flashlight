@@ -16,7 +16,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
 
-public class FlashlightController {
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.hilt.android.qualifiers.ApplicationContext;
+
+@Singleton
+public class FlashlightService {
     private static final Executor executor = Executors.newSingleThreadExecutor();
     private static RunnableFuture<Object> runningFuture = null;
     private static boolean flashlightEnabled;
@@ -29,7 +35,8 @@ public class FlashlightController {
     private final CameraManager cameraManager;
     private String cameraId;
 
-    public FlashlightController(Context context) {
+    @Inject
+    public FlashlightService(@ApplicationContext  Context context) {
         this.context = context;
         cameraManager = (CameraManager) context.getSystemService(CAMERA_SERVICE);
         try {

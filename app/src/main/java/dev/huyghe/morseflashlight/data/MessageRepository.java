@@ -20,7 +20,7 @@ public class MessageRepository {
     public MessageRepository(MessageDAO messageDAO) {
         this.messageDAO = messageDAO;
         this.allMessages = messageDAO.all();
-        this.allMessagesSorted = messageDAO.sortedByTimesUsed();
+        this.allMessagesSorted = messageDAO.sortedByLastUsed();
     }
 
     /**
@@ -30,20 +30,28 @@ public class MessageRepository {
     public LiveData<List<Message>> getAllMessages() {
         return allMessages;
     }
+    /**
+     * Gets every saved message.
+     * @return an observable list of messages
+     */
+    public LiveData<List<Message>> getAllMessagesSorted() {
+        return allMessagesSorted;
+    }
+
 
     /**
      * Saves a message to be used later.
      * @param message the message to save
      */
-    public void saveMessage(Message message) {
-        AppDatabase.databaseWriteExecutor.execute(() -> messageDAO.insert(message));
+    public void saveMessage(String message) {
+        AppDatabase.databaseWriteExecutor.execute(() -> messageDAO.insert(new Message(message)));
     }
 
     /**
      * Delete a message from the list of saved messages.
-     * @param id the message's id
+     * @param message the message
      */
-    public void deleteModule(int id) {
-        AppDatabase.databaseWriteExecutor.execute(() -> messageDAO.delete(id));
+    public void deleteMessage(String message) {
+        AppDatabase.databaseWriteExecutor.execute(() -> messageDAO.delete(message));
     }
 }
