@@ -1,27 +1,23 @@
 package dev.huyghe.morseflashlight.ui.messagelist;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
-import dev.huyghe.morseflashlight.data.Message;
 import dev.huyghe.morseflashlight.databinding.ActivityMessageListBinding;
 import dev.huyghe.morseflashlight.domain.FlashlightService;
-import dev.huyghe.morseflashlight.domain.MorseCharacter;
 import dev.huyghe.morseflashlight.ui.MessageViewModel;
 
 @AndroidEntryPoint
 public class MessageListActivity extends AppCompatActivity {
-    private static final String TAG = "MorseInputActivity";
+    private static final String TAG = MessageListActivity.class.getSimpleName();
 
     @Inject
     FlashlightService flashlightService;
@@ -35,24 +31,16 @@ public class MessageListActivity extends AppCompatActivity {
 
         binding.morseInputButtonFlash.setOnClickListener(view -> {
             String s = binding.morseInputEdit.getText().toString();
-            List<MorseCharacter> morseCharacters = new ArrayList<>();
-            for (int i = 0; i < s.length(); ++i) {
-                morseCharacters.add(MorseCharacter.newFromChar(s.charAt(i)));
-            }
-            try {
-                flashlightService.flashMorseString(
-                        morseCharacters,
-                        index -> Log.d(TAG, "received char " + morseCharacters.get(index).getCharacter())
-                );
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            binding.morseInputEdit.setText("");
-            messageViewModel.onMessageFlashed(s);
+            messageViewModel.flashMessage(s);
         });
 
         // Message list setup
-        MessageListAdapter messageListAdapter = new MessageListAdapter();
+        MessageListAdapter messageListAdapter = new MessageListAdapter(view -> {
+            int position = binding.messageListRv.getChildLayoutPosition(view);
+            String message = Objects.requireNonNull(messageViewModel.getAllMessages().getValue()).get(position).getContent();
+            messageViewModel.flashMessage(message);
+            binding.morseInputEdit.setText(message);
+        });
         binding.messageListRv.setAdapter(messageListAdapter);
         binding.messageListRv.setLayoutManager(new LinearLayoutManager(this));
         messageViewModel

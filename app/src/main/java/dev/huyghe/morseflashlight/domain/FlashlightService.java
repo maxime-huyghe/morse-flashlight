@@ -7,8 +7,10 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -23,6 +25,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext;
 
 @Singleton
 public class FlashlightService {
+    private static final String TAG = FlashlightService.class.getSimpleName();
+
     private static final Executor executor = Executors.newSingleThreadExecutor();
     private static RunnableFuture<Object> runningFuture = null;
     private static boolean flashlightEnabled;
@@ -127,6 +131,21 @@ public class FlashlightService {
 
     public interface CharacterStartedFlashingListener {
         void onCharacterStartedFlashing(int i);
+    }
+
+    public void flashString(String message) {
+        List<MorseCharacter> morseCharacters = new ArrayList<>();
+        for (int i = 0; i < message.length(); ++i) {
+            morseCharacters.add(MorseCharacter.newFromChar(message.charAt(i)));
+        }
+        try {
+            flashMorseString(
+                    morseCharacters,
+                    index -> Log.d(TAG, "received char " + morseCharacters.get(index).getCharacter())
+            );
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void flashMorseString(List<MorseCharacter> characters, CharacterStartedFlashingListener onCharacterStartedFlashing) throws InterruptedException {

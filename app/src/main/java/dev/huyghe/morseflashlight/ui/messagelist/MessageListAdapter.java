@@ -33,10 +33,12 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     }
 
     List<Message> messages;
+    View.OnClickListener onItemClickListener;
 
-    public MessageListAdapter() {
+    public MessageListAdapter(View.OnClickListener onItemClickListener) {
         super();
         messages = new ArrayList<>();
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -45,6 +47,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.activity_message_list_row_item, parent, false);
+        view.setOnClickListener(onItemClickListener);
         return new ViewHolder(view);
     }
 
