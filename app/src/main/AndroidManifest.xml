@@ -18,7 +18,7 @@
         android:theme="@style/Theme.MorseFlashlight"
         tools:targetApi="31">
         <activity
-            android:name=".ui.messagelist.MessageListActivity"
+            android:name=".ui.morse.MorseActivity"
             android:exported="false" />
         <activity
             android:name=".ui.MainActivity"

@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import dev.huyghe.morseflashlight.databinding.ActivityMainBinding;
 import dev.huyghe.morseflashlight.domain.FlashlightService;
-import dev.huyghe.morseflashlight.ui.messagelist.MessageListActivity;
+import dev.huyghe.morseflashlight.ui.morse.MorseActivity;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding.mainButtonFlashMorseMessage.setOnClickListener(view -> {
             flashlightService.turnOffCompletely();
-            startActivity(new Intent(this, MessageListActivity.class));
+            startActivity(new Intent(this, MorseActivity.class));
         });
 
         Log.d(TAG, "Finished setting up MainActivity listeners");

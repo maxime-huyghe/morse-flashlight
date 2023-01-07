@@ -1,7 +1,10 @@
 package dev.huyghe.morseflashlight.data;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -10,16 +13,27 @@ import java.util.Objects;
 /**
  * DB object to represent a message that a user may want to communicate using the app.
  */
-@Entity(indices = {@Index("lastUsed")})
+@Entity(
+        indices = {@Index("lastUsed")},
+        foreignKeys = {@ForeignKey(entity = Category.class, parentColumns = "id", childColumns = "categoryId", onDelete = ForeignKey.SET_NULL)}
+)
 public class Message {
     @PrimaryKey
     @NonNull
     private final String content;
     private long lastUsed;
+    private Long categoryId;
 
     public Message(@NonNull String content) {
         this.content = content;
         this.lastUsed = System.currentTimeMillis(); // Creating == never used.
+    }
+
+    @Ignore
+    public Message(@NonNull String content, long categoryId) {
+        this.content = content;
+        this.lastUsed = System.currentTimeMillis(); // Creating == never used.
+        this.categoryId = categoryId;
     }
 
     /**
@@ -42,25 +56,34 @@ public class Message {
         lastUsed = timestampLastUsed;
     }
 
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Message)) return false;
         Message message = (Message) o;
-        return getLastUsed() == message.getLastUsed() && getContent().equals(message.getContent());
+        return getLastUsed() == message.getLastUsed() && getContent().equals(message.getContent()) && Objects.equals(getCategoryId(), message.getCategoryId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getContent(), getLastUsed());
+        return Objects.hash(getContent(), getLastUsed(), getCategoryId());
     }
 
     @NonNull
     @Override
     public String toString() {
         return "Message{" +
-                ", content='" + content + '\'' +
+                "content='" + content + '\'' +
                 ", lastUsed=" + lastUsed +
+                ", categoryId=" + categoryId +
                 '}';
     }
 }

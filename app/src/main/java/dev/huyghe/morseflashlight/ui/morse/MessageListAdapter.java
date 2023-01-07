@@ -1,14 +1,12 @@
-package dev.huyghe.morseflashlight.ui.messagelist;
+package dev.huyghe.morseflashlight.ui.morse;
 
 import android.annotation.SuppressLint;
-import android.database.Observable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -46,7 +44,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.activity_message_list_row_item, parent, false);
+                .inflate(R.layout.message_list_row_item, parent, false);
         view.setOnClickListener(onItemClickListener);
         return new ViewHolder(view);
     }

@@ -23,7 +23,7 @@ public class AppDatabaseHiltProvider {
         return Room.databaseBuilder(
                 applicationContext,
                 AppDatabase.class,
-                "Morse_2022-12-21.1"
+                "Morse_2023-01-07.4"
         ).build();
     }
 
@@ -31,5 +31,11 @@ public class AppDatabaseHiltProvider {
     @Provides
     MessageDAO provideMessageDAO(AppDatabase appDatabase) {
         return appDatabase.messageDAO();
+    }
+
+    @Singleton
+    @Provides
+    CategoryDAO provideCategoryDAO(AppDatabase appDatabase) {
+        return appDatabase.categoryDAO();
     }
 }
