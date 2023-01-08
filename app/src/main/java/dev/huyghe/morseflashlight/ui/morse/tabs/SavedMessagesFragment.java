@@ -37,7 +37,6 @@ public class SavedMessagesFragment extends Fragment {
         return new SavedMessagesFragment();
     }
 
-    private FragmentSavedMessagesBinding binding;
     private MessageViewModel messageViewModel;
 
     @Override
@@ -50,14 +49,12 @@ public class SavedMessagesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentSavedMessagesBinding.inflate(inflater, container, false);
+        FragmentSavedMessagesBinding binding = FragmentSavedMessagesBinding.inflate(inflater, container, false);
 
         // Category list setup
-        CategoryListAdapter categoryListAdapter = new CategoryListAdapter(view -> {
-            int position = binding.fragmentSavedMessagesRv.getChildLayoutPosition(view);
-            String message = messageViewModel.getAllMessages().getValue().get(position).getContent();
-            messageViewModel.flashCurrentMessage(message);
-        });
+        CategoryListAdapter categoryListAdapter = new CategoryListAdapter(
+                message -> messageViewModel.flashAndSaveMessage(message)
+        );
         binding.fragmentSavedMessagesRv.setAdapter(categoryListAdapter);
         binding.fragmentSavedMessagesRv.setLayoutManager(new LinearLayoutManager(this.getContext()));
         messageViewModel

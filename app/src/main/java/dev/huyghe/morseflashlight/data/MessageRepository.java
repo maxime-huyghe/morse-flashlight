@@ -64,10 +64,10 @@ public class MessageRepository {
      *
      * @param message the message to save
      */
-    public void saveMessage(String message) {
+    public void saveMessage(Message message) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            if (messageDAO.insert(new Message(message)) == -1) {
-                messageDAO.updateLastUsed(message, System.currentTimeMillis());
+            if (messageDAO.insert(message) == -1) {
+                messageDAO.updateLastUsed(message.getContent(), System.currentTimeMillis());
             }
         });
     }

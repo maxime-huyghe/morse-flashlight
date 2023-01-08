@@ -37,7 +37,6 @@ public class MessageHistoryFragment extends Fragment {
         return new MessageHistoryFragment();
     }
 
-    private FragmentMessageHistoryBinding binding;
     private MessageViewModel messageViewModel;
 
     @Override
@@ -50,14 +49,12 @@ public class MessageHistoryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentMessageHistoryBinding.inflate(inflater, container, false);
+        FragmentMessageHistoryBinding binding = FragmentMessageHistoryBinding.inflate(inflater, container, false);
 
         // Message list setup
-        MessageListAdapter messageListAdapter = new MessageListAdapter(view -> {
-            int position = binding.fragmentMessageHistoryRv.getChildLayoutPosition(view);
-            String message = messageViewModel.getAllMessages().getValue().get(position).getContent();
-            messageViewModel.flashCurrentMessage(message);
-        });
+        MessageListAdapter messageListAdapter = new MessageListAdapter(
+                message -> messageViewModel.flashAndSaveMessage(message)
+        );
         binding.fragmentMessageHistoryRv.setAdapter(messageListAdapter);
         binding.fragmentMessageHistoryRv.setLayoutManager(new LinearLayoutManager(this.getContext()));
         messageViewModel

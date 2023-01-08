@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import dev.huyghe.morseflashlight.R;
 import dev.huyghe.morseflashlight.data.Category;
@@ -28,23 +29,23 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         final RecyclerView rv;
         final MessageListAdapter adapter;
 
-        public ViewHolder(View view, View.OnClickListener onItemClickListener) {
+        public ViewHolder(View view, Consumer<Message> onMessageClicked) {
             super(view);
             tv = view.findViewById(R.id.category_list_row_item_tv);
             rv = view.findViewById(R.id.category_list_row_item_rv);
-            adapter = new MessageListAdapter(onItemClickListener);
+            adapter = new MessageListAdapter(onMessageClicked);
             rv.setAdapter(adapter);
             rv.setLayoutManager(new LinearLayoutManager(view.getContext()));
         }
     }
 
     List<Pair<Category, List<Message>>> categoriesToMessages;
-    View.OnClickListener onItemClickListener;
+    final Consumer<Message> onMessageClicked;
 
-    public CategoryListAdapter(View.OnClickListener onItemClickListener) {
+    public CategoryListAdapter(Consumer<Message> onMessageClicked) {
         super();
         categoriesToMessages = Collections.emptyList();
-        this.onItemClickListener = onItemClickListener;
+        this.onMessageClicked = onMessageClicked;
     }
 
     @NonNull
@@ -53,7 +54,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.category_list_row_item, parent, false);
-        return new ViewHolder(view, onItemClickListener);
+        return new ViewHolder(view, onMessageClicked);
     }
 
     @Override

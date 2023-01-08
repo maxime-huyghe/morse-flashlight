@@ -1,17 +1,20 @@
 package dev.huyghe.morseflashlight.ui.morse;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import dev.huyghe.morseflashlight.R;
 import dev.huyghe.morseflashlight.data.Message;
@@ -20,6 +23,7 @@ import dev.huyghe.morseflashlight.data.Message;
  * Provides
  */
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.ViewHolder> {
+    private static final String TAG = MessageListAdapter.class.getSimpleName();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tv;
@@ -31,12 +35,31 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     }
 
     List<Message> messages;
-    View.OnClickListener onItemClickListener;
+    @Nullable
+    RecyclerView parentRecyclerView;
+    final View.OnClickListener onItemClickListener;
 
-    public MessageListAdapter(View.OnClickListener onItemClickListener) {
+    public MessageListAdapter(Consumer<Message> onMessageClicked) {
         super();
         messages = new ArrayList<>();
-        this.onItemClickListener = onItemClickListener;
+        this.onItemClickListener = itemView -> {
+            assert parentRecyclerView != null : "null parentRecyclerView";
+            int position = parentRecyclerView.getChildAdapterPosition(itemView);
+            Message message = messages.get(position);
+            onMessageClicked.accept(message);
+        };
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        parentRecyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        parentRecyclerView = null;
     }
 
     @NonNull

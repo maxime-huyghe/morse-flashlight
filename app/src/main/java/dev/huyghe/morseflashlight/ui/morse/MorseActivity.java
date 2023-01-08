@@ -10,6 +10,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import dev.huyghe.morseflashlight.data.Message;
 import dev.huyghe.morseflashlight.databinding.ActivityMorseBinding;
 import dev.huyghe.morseflashlight.domain.FlashlightService;
 import dev.huyghe.morseflashlight.ui.MessageViewModel;
@@ -31,14 +32,16 @@ public class MorseActivity extends AppCompatActivity {
 
         binding.morseInputButtonFlash.setOnClickListener(view -> {
             String s = binding.morseInputEdit.getText().toString();
-            messageViewModel.flashCurrentMessage(s);
+            messageViewModel.flashAndSaveMessage(new Message(s));
         });
 
         messageViewModel.getCurrentMessage().observe(
                 this,
                 newMessage -> {
-                    binding.morseInputEdit.setText(newMessage);
-                    binding.morseInputEdit.setSelection(newMessage.length());
+                    binding.morseInputEdit.setText(newMessage.getContent());
+                    // By default, android moves the cursor to the beginning
+                    // when calling TextEdit#setText, so we put it back at the end.
+                    binding.morseInputEdit.setSelection(newMessage.getContent().length());
                 }
         );
 
