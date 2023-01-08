@@ -35,8 +35,11 @@ public class MessageRepository {
             long help = categoryDAO.insertCategory(new Category("Help"));
             long greetings = categoryDAO.insertCategory(new Category("Greetings"));
             categoryDAO.insertCategory(new Category("Test"));
+            messageDAO.delete("need doctor");
             messageDAO.insert(new Message("need doctor", help));
+            messageDAO.delete("hello");
             messageDAO.insert(new Message("hello", greetings));
+            messageDAO.delete("good bye");
             messageDAO.insert(new Message("good bye", greetings));
         }));
     }
