@@ -26,7 +26,15 @@ public interface CategoryDAO {
     long insertCategory(Category category);
 
     /**
-     * Get a list of all categories and associated messages (if any), unsorted.
+     * Get a list of all categories, sorted alphabetically.
+     *
+     * @return an observables list of categories
+     */
+    @Query("select * from category")
+    LiveData<List<Category>> all();
+
+    /**
+     * Get a list of all categories and associated messages (if any).
      *
      * @return an observables map of categories to messages
      */

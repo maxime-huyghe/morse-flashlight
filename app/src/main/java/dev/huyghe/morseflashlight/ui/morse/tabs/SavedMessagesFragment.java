@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import dev.huyghe.morseflashlight.databinding.FragmentSavedMessagesBinding;
 import dev.huyghe.morseflashlight.ui.MessageViewModel;
 import dev.huyghe.morseflashlight.ui.morse.CategoryListAdapter;
+import dev.huyghe.morseflashlight.ui.morse.MessageListAdapter;
 
 /**
  * A {@link Fragment} tasked with displaying saved messages.
@@ -53,7 +54,8 @@ public class SavedMessagesFragment extends Fragment {
 
         // Category list setup
         CategoryListAdapter categoryListAdapter = new CategoryListAdapter(
-                message -> messageViewModel.flashAndSaveMessage(message)
+                message -> messageViewModel.flashAndSaveMessage(message),
+                message -> MessageListAdapter.openDialog(this.getContext(), messageViewModel, message)
         );
         binding.fragmentSavedMessagesRv.setAdapter(categoryListAdapter);
         binding.fragmentSavedMessagesRv.setLayoutManager(new LinearLayoutManager(this.getContext()));

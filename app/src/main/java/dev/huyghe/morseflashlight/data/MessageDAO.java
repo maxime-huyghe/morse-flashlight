@@ -28,7 +28,7 @@ public interface MessageDAO {
     /**
      * Update a Message's lastUsed.
      *
-     * @param content the message to update
+     * @param content  the message to update
      * @param lastUsed the new lastUsed
      */
     @Query("update message " +
@@ -59,4 +59,12 @@ public interface MessageDAO {
      */
     @Query("delete from message where content = :message")
     void delete(String message);
+
+    /**
+     * Update a message in the db.
+     *
+     * @param message the message with new values.
+     */
+    @Update
+    void update(Message message);
 }

@@ -12,6 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.divider.MaterialDividerItemDecoration;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import dev.huyghe.morseflashlight.R;
+import dev.huyghe.morseflashlight.data.Category;
 import dev.huyghe.morseflashlight.databinding.FragmentMessageHistoryBinding;
 import dev.huyghe.morseflashlight.ui.MessageViewModel;
 import dev.huyghe.morseflashlight.ui.morse.MessageListAdapter;
@@ -22,6 +31,7 @@ import dev.huyghe.morseflashlight.ui.morse.MessageListAdapter;
  * create an instance of this fragment.
  */
 public class MessageHistoryFragment extends Fragment {
+    private static final String TAG = MessageHistoryFragment.class.getSimpleName();
 
     public MessageHistoryFragment() {
         // Required empty public constructor
@@ -52,11 +62,25 @@ public class MessageHistoryFragment extends Fragment {
         FragmentMessageHistoryBinding binding = FragmentMessageHistoryBinding.inflate(inflater, container, false);
 
         // Message list setup
+        messageViewModel
+                .getAllCategories()
+                .observe(this.getViewLifecycleOwner(), newVal -> {
+                });
         MessageListAdapter messageListAdapter = new MessageListAdapter(
-                message -> messageViewModel.flashAndSaveMessage(message)
+                // Item click.
+                message -> messageViewModel.flashAndSaveMessage(message),
+                // Save icon click.
+                message -> MessageListAdapter.openDialog(this.getContext(), messageViewModel, message)
         );
         binding.fragmentMessageHistoryRv.setAdapter(messageListAdapter);
-        binding.fragmentMessageHistoryRv.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
+        binding.fragmentMessageHistoryRv.setLayoutManager(linearLayoutManager);
+        binding.fragmentMessageHistoryRv.addItemDecoration(
+                new MaterialDividerItemDecoration(
+                        binding.fragmentMessageHistoryRv.getContext(),
+                        linearLayoutManager.getOrientation()
+                )
+        );
         messageViewModel
                 .getAllMessages()
                 .observe(this.getViewLifecycleOwner(), messageListAdapter::update);

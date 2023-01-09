@@ -4,10 +4,14 @@
     <string name="main_button_toggle_strobe">Toggle strobe</string>
     <string name="main_button_toggle_sos">Toggle SOS</string>
     <string name="flashing_speed">Flashing speed</string>
-    <string name="morse_input_label_text_to_flash">Input you message:</string>
+    <string name="morse_input_label_text_to_flash">Your message</string>
     <string name="main_btn_flash_morse_message">Flash a message</string>
     <string name="morse_input_btn_flash">Flash</string>
     <string name="save_for_later">Save for later</string>
     <string name="morse_tab_history">History</string>
     <string name="morse_tab_saved_messages">Saved messages</string>
+    <string name="message_list_item_save_button_alt">Save</string>
+    <string name="message_list_save_dialog_title">Choose a category</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_ok">OK</string>
 </resources>

@@ -30,6 +30,7 @@ public class MessageViewModel extends ViewModel {
     private final LiveData<List<Message>> allMessagesSorted;
     private final FlashlightService flashlightService;
     private final MutableLiveData<Message> currentMessage;
+    private final LiveData<List<Category>> allCategories;
     private final LiveData<List<Pair<Category, List<Message>>>> allCategoriesWithMessages;
 
     @Inject
@@ -38,6 +39,7 @@ public class MessageViewModel extends ViewModel {
         this.allMessagesSorted = messageRepository.getAllMessagesSorted();
         this.flashlightService = flashlightService;
         this.currentMessage = new MutableLiveData<>(new Message(""));
+        this.allCategories = messageRepository.getAllCategories();
         this.allCategoriesWithMessages = Transformations.map(
                 messageRepository.getAllCategoriesWithMessages(),
                 map -> {
@@ -68,6 +70,15 @@ public class MessageViewModel extends ViewModel {
     }
 
     /**
+     * Gets every category sorted alphabeticaly.
+     *
+     * @return an observable list of categories
+     */
+    public LiveData<List<Category>> getAllCategories() {
+        return allCategories;
+    }
+
+    /**
      * Gets every category and associated messages
      *
      * @return an observable list of mappings of categories to message lists
@@ -85,5 +96,16 @@ public class MessageViewModel extends ViewModel {
         currentMessage.setValue(message);
         flashlightService.flashString(message.getContent());
         messageRepository.saveMessage(message);
+    }
+
+    /**
+     * Sets the given message's category to the given category.
+     *
+     * @param message  the message, which may or may not already have a category
+     * @param category the category
+     */
+    public void setMessageCategory(Message message, Category category) {
+        message.setCategoryId(category.getId());
+        messageRepository.updateMessage(message);
     }
 }

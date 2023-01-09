@@ -23,12 +23,14 @@ public class MessageRepository {
     private final LiveData<List<Message>> allMessages;
     private final LiveData<List<Message>> allMessagesSorted;
     private final LiveData<Map<Category, List<Message>>> allCategoriesWithMessages;
+    private final LiveData<List<Category>> allCategories;
 
     @Inject
     public MessageRepository(AppDatabase appDatabase, MessageDAO messageDAO, CategoryDAO categoryDAO) {
         this.messageDAO = messageDAO;
         this.allMessages = messageDAO.all();
         this.allMessagesSorted = messageDAO.sortedByLastUsed();
+        this.allCategories = categoryDAO.all();
         this.allCategoriesWithMessages = categoryDAO.allWithMessages();
 
         AppDatabase.databaseWriteExecutor.execute(() -> appDatabase.runInTransaction(() -> {
@@ -73,6 +75,24 @@ public class MessageRepository {
                 messageDAO.updateLastUsed(message.getContent(), System.currentTimeMillis());
             }
         });
+    }
+
+    /**
+     * Update a message.
+     *
+     * @param message the message to update
+     */
+    public void updateMessage(Message message) {
+        AppDatabase.databaseWriteExecutor.execute(() -> messageDAO.update(message));
+    }
+
+    /**
+     * Gets every category, sorted alphabetically.
+     *
+     * @return an observable list of categories
+     */
+    public LiveData<List<Category>> getAllCategories() {
+        return allCategories;
     }
 
     /**
