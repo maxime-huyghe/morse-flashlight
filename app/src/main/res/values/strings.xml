@@ -14,4 +14,6 @@
     <string name="message_list_save_dialog_title">Choose a category</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_ok">OK</string>
+    <string name="fragment_saved_messages_label_new_category_name">New category\'s name</string>
+    <string name="saved_messages_button_add_category">Add new category</string>
 </resources>

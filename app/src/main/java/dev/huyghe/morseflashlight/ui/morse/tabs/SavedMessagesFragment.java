@@ -52,6 +52,13 @@ public class SavedMessagesFragment extends Fragment {
         // Inflate the layout for this fragment
         FragmentSavedMessagesBinding binding = FragmentSavedMessagesBinding.inflate(inflater, container, false);
 
+        // New category input setup
+        binding.fragmentSavedMessagesButtonAddCategory.setOnClickListener(view -> {
+            String name = binding.fragmentSavedMessagesEditAddCategory.getText().toString();
+            messageViewModel.createCategory(name);
+            binding.fragmentSavedMessagesEditAddCategory.setText("");
+        });
+
         // Category list setup
         CategoryListAdapter categoryListAdapter = new CategoryListAdapter(
                 message -> messageViewModel.flashAndSaveMessage(message),

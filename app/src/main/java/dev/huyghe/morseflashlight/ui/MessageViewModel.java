@@ -1,5 +1,6 @@
 package dev.huyghe.morseflashlight.ui;
 
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,8 @@ import dev.huyghe.morseflashlight.domain.FlashlightService;
  */
 @HiltViewModel
 public class MessageViewModel extends ViewModel {
+    private final static String TAG = MessageViewModel.class.getSimpleName();
+
     private final MessageRepository messageRepository;
     private final LiveData<List<Message>> allMessagesSorted;
     private final FlashlightService flashlightService;
@@ -48,6 +51,7 @@ public class MessageViewModel extends ViewModel {
                         list.add(new Pair<>(category, map.get(category)));
                     }
                     list.sort(Comparator.comparing(pair -> pair.first.getName()));
+                    Log.d(TAG, list.toString());
                     return list;
                 }
         );
@@ -70,7 +74,7 @@ public class MessageViewModel extends ViewModel {
     }
 
     /**
-     * Gets every category sorted alphabeticaly.
+     * Gets every category sorted alphabetically.
      *
      * @return an observable list of categories
      */
@@ -79,7 +83,7 @@ public class MessageViewModel extends ViewModel {
     }
 
     /**
-     * Gets every category and associated messages
+     * Gets every category and associated messages, sorted by category name.
      *
      * @return an observable list of mappings of categories to message lists
      */
@@ -107,5 +111,9 @@ public class MessageViewModel extends ViewModel {
     public void setMessageCategory(Message message, Category category) {
         message.setCategoryId(category.getId());
         messageRepository.updateMessage(message);
+    }
+
+    public void createCategory(String name) {
+        messageRepository.createCategory(name);
     }
 }

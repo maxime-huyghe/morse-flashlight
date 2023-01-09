@@ -26,6 +26,14 @@ public interface CategoryDAO {
     long insertCategory(Category category);
 
     /**
+     * Insert a Category without replacing a previous category with the same name.
+     *
+     * @param category the category to insert
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void insertCategoryWithoutReplacing(Category category);
+
+    /**
      * Get a category by name.
      *
      * @param name the case-sensitive name.
@@ -39,7 +47,7 @@ public interface CategoryDAO {
      *
      * @return an observables list of categories
      */
-    @Query("select * from category")
+    @Query("select * from category order by category.name")
     LiveData<List<Category>> all();
 
     /**

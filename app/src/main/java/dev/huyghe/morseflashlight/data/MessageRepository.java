@@ -22,12 +22,14 @@ public class MessageRepository {
     private final MessageDAO messageDAO;
     private final LiveData<List<Message>> allMessages;
     private final LiveData<List<Message>> allMessagesSorted;
+    private final CategoryDAO categoryDAO;
     private final LiveData<Map<Category, List<Message>>> allCategoriesWithMessages;
     private final LiveData<List<Category>> allCategories;
 
     @Inject
     public MessageRepository(AppDatabase appDatabase, MessageDAO messageDAO, CategoryDAO categoryDAO) {
         this.messageDAO = messageDAO;
+        this.categoryDAO = categoryDAO;
         this.allMessages = messageDAO.all();
         this.allMessagesSorted = messageDAO.sortedByLastUsed();
         this.allCategories = categoryDAO.all();
@@ -109,5 +111,11 @@ public class MessageRepository {
      */
     public LiveData<Map<Category, List<Message>>> getAllCategoriesWithMessages() {
         return allCategoriesWithMessages;
+    }
+
+    public void createCategory(String name) {
+        AppDatabase.databaseWriteExecutor.execute(
+                () -> categoryDAO.insertCategoryWithoutReplacing(new Category(name))
+        );
     }
 }
