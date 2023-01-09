@@ -34,15 +34,22 @@ public class MessageRepository {
         this.allCategoriesWithMessages = categoryDAO.allWithMessages();
 
         AppDatabase.databaseWriteExecutor.execute(() -> appDatabase.runInTransaction(() -> {
-            long help = categoryDAO.insertCategory(new Category("Help"));
-            long greetings = categoryDAO.insertCategory(new Category("Greetings"));
-            categoryDAO.insertCategory(new Category("Test"));
+            Category help = categoryDAO.byName("Help");
+            if (help == null) {
+                help = new Category("Help");
+                help.setId(categoryDAO.insertCategory(help));
+            }
+            Category greetings = categoryDAO.byName("Greetings");
+            if (greetings == null) {
+                greetings = new Category("Greetings");
+                greetings.setId(categoryDAO.insertCategory(greetings));
+            }
             messageDAO.delete("need doctor");
-            messageDAO.insert(new Message("need doctor", help));
+            messageDAO.insert(new Message("need doctor", help.getId()));
             messageDAO.delete("hello");
-            messageDAO.insert(new Message("hello", greetings));
+            messageDAO.insert(new Message("hello", greetings.getId()));
             messageDAO.delete("good bye");
-            messageDAO.insert(new Message("good bye", greetings));
+            messageDAO.insert(new Message("good bye", greetings.getId()));
         }));
     }
 

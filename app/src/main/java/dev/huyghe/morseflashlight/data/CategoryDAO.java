@@ -26,6 +26,15 @@ public interface CategoryDAO {
     long insertCategory(Category category);
 
     /**
+     * Get a category by name.
+     *
+     * @param name the case-sensitive name.
+     * @return the category
+     */
+    @Query("select * from category where category.name = :name")
+    Category byName(String name);
+
+    /**
      * Get a list of all categories, sorted alphabetically.
      *
      * @return an observables list of categories
