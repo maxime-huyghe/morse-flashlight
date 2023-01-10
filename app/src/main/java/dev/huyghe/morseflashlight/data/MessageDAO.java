@@ -45,12 +45,28 @@ public interface MessageDAO {
     LiveData<List<Message>> all();
 
     /**
-     * Get a list of messages sorted by descending times used.
+     * Get a list of messages default messages sorted in whatever order SQLite sees fit.
+     *
+     * @return an observable list of messages
+     */
+    @Query("select * from message where custom = 0")
+    LiveData<List<Message>> allDefault();
+
+    /**
+     * Get a list of messages sorted by descending last time used.
      *
      * @return an observable list of messages
      */
     @Query("select * from message order by lastUsed desc")
     LiveData<List<Message>> sortedByLastUsed();
+
+    /**
+     * Get a list of default messages sorted by descending last time used.
+     *
+     * @return an observable list of messages
+     */
+    @Query("select * from message where custom = 0 order by lastUsed desc")
+    LiveData<List<Message>> defaultSortedByLastUsed();
 
     /**
      * Delete a message from the DB.

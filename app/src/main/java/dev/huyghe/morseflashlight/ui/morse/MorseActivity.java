@@ -1,6 +1,7 @@
 package dev.huyghe.morseflashlight.ui.morse;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,20 +31,31 @@ public class MorseActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         MessageViewModel messageViewModel = new ViewModelProvider(this).get(MessageViewModel.class);
 
+        // Custom message unlocking
+        messageViewModel.isUnlocked().observe(this, unlocked -> {
+            if (unlocked) {
+                binding.morseInputButtonUnlockCustomMessages.setVisibility(View.GONE);
+                binding.morseInputFlashForm.setVisibility(View.VISIBLE);
+            } else {
+                binding.morseInputButtonUnlockCustomMessages.setVisibility(View.VISIBLE);
+                binding.morseInputFlashForm.setVisibility(View.GONE);
+            }
+        });
+        binding.morseInputButtonUnlockCustomMessages.setOnClickListener(view -> {
+            messageViewModel.unlock();
+        });
+
         binding.morseInputButtonFlash.setOnClickListener(view -> {
             String s = binding.morseInputEdit.getText().toString();
             messageViewModel.flashAndSaveMessage(new Message(s));
         });
 
-        messageViewModel.getCurrentMessage().observe(
-                this,
-                newMessage -> {
-                    binding.morseInputEdit.setText(newMessage.getContent());
-                    // By default, android moves the cursor to the beginning
-                    // when calling TextEdit#setText, so we put it back at the end.
-                    binding.morseInputEdit.setSelection(newMessage.getContent().length());
-                }
-        );
+        messageViewModel.getCurrentMessage().observe(this, newMessage -> {
+            binding.morseInputEdit.setText(newMessage.getContent());
+            // By default, android moves the cursor to the beginning
+            // when calling TextEdit#setText, so we put it back at the end.
+            binding.morseInputEdit.setSelection(newMessage.getContent().length());
+        });
 
         binding.morsePager.setAdapter(new MorseTabAdapter(this));
 

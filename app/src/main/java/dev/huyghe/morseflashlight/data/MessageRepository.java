@@ -21,9 +21,12 @@ public class MessageRepository {
 
     private final MessageDAO messageDAO;
     private final LiveData<List<Message>> allMessages;
+    private final LiveData<List<Message>> allDefaultMessages;
     private final LiveData<List<Message>> allMessagesSorted;
+    private final LiveData<List<Message>> allDefaultMessagesSorted;
     private final CategoryDAO categoryDAO;
     private final LiveData<Map<Category, List<Message>>> allCategoriesWithMessages;
+    private final LiveData<Map<Category, List<Message>>> allCategoriesWithDefaultMessages;
     private final LiveData<List<Category>> allCategories;
 
     @Inject
@@ -31,9 +34,12 @@ public class MessageRepository {
         this.messageDAO = messageDAO;
         this.categoryDAO = categoryDAO;
         this.allMessages = messageDAO.all();
+        this.allDefaultMessages = messageDAO.allDefault();
         this.allMessagesSorted = messageDAO.sortedByLastUsed();
+        this.allDefaultMessagesSorted = messageDAO.defaultSortedByLastUsed();
         this.allCategories = categoryDAO.all();
         this.allCategoriesWithMessages = categoryDAO.allWithMessages();
+        this.allCategoriesWithDefaultMessages = categoryDAO.allWithDefaultMessages();
 
         AppDatabase.databaseWriteExecutor.execute(() -> appDatabase.runInTransaction(() -> {
             Category help = categoryDAO.byName("Help");
@@ -47,11 +53,11 @@ public class MessageRepository {
                 greetings.setId(categoryDAO.insertCategory(greetings));
             }
             messageDAO.delete("need doctor");
-            messageDAO.insert(new Message("need doctor", help.getId()));
+            messageDAO.insert(new Message("need doctor", help.getId(), false));
             messageDAO.delete("hello");
-            messageDAO.insert(new Message("hello", greetings.getId()));
+            messageDAO.insert(new Message("hello", greetings.getId(), false));
             messageDAO.delete("good bye");
-            messageDAO.insert(new Message("good bye", greetings.getId()));
+            messageDAO.insert(new Message("good bye", greetings.getId(), false));
         }));
     }
 
@@ -60,8 +66,12 @@ public class MessageRepository {
      *
      * @return an observable list of messages
      */
-    public LiveData<List<Message>> getAllMessages() {
-        return allMessages;
+    public LiveData<List<Message>> getAllMessages(boolean includeCustom) {
+        if (includeCustom) {
+            return allMessages;
+        } else {
+            return allDefaultMessages;
+        }
     }
 
     /**
@@ -69,8 +79,12 @@ public class MessageRepository {
      *
      * @return an observable list of messages
      */
-    public LiveData<List<Message>> getAllMessagesSorted() {
-        return allMessagesSorted;
+    public LiveData<List<Message>> getAllMessagesSorted(boolean includeCustom) {
+        if (includeCustom) {
+            return allMessagesSorted;
+        } else {
+            return allDefaultMessagesSorted;
+        }
     }
 
     /**
@@ -109,8 +123,12 @@ public class MessageRepository {
      *
      * @return an observable map of categories to message lists
      */
-    public LiveData<Map<Category, List<Message>>> getAllCategoriesWithMessages() {
+    public LiveData<Map<Category, List<Message>>> getAllCategoriesWithMessages(boolean includeCustomMessages) {
+        if (includeCustomMessages) {
         return allCategoriesWithMessages;
+        } else {
+            return allCategoriesWithDefaultMessages;
+        }
     }
 
     public void createCategory(String name) {

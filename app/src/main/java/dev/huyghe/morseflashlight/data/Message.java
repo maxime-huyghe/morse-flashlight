@@ -22,11 +22,20 @@ public class Message {
     @NonNull
     private final String content;
     private long lastUsed;
+    private boolean custom;
     private Long categoryId;
 
     public Message(@NonNull String content) {
         this.content = content;
         this.lastUsed = System.currentTimeMillis(); // Creating == never used.
+        this.custom = true;
+    }
+
+    @Ignore
+    public Message(@NonNull String content, boolean custom) {
+        this.content = content;
+        this.lastUsed = System.currentTimeMillis(); // Creating == never used.
+        this.custom = custom;
     }
 
     @Ignore
@@ -34,6 +43,15 @@ public class Message {
         this.content = content;
         this.lastUsed = System.currentTimeMillis(); // Creating == never used.
         this.categoryId = categoryId;
+        this.custom = true;
+    }
+
+    @Ignore
+    public Message(@NonNull String content, long categoryId, boolean custom) {
+        this.content = content;
+        this.lastUsed = System.currentTimeMillis(); // Creating == never used.
+        this.categoryId = categoryId;
+        this.custom = custom;
     }
 
     /**
@@ -60,8 +78,16 @@ public class Message {
         return categoryId;
     }
 
-    public void setCategoryId(long categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public boolean isCustom() {
+        return custom;
+    }
+
+    public void setCustom(boolean custom) {
+        this.custom = custom;
     }
 
     @Override

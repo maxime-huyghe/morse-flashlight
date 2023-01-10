@@ -60,4 +60,16 @@ public interface CategoryDAO {
                     "left join message on category.id = message.categoryId"
     )
     LiveData<Map<Category, List<Message>>> allWithMessages();
+
+    /**
+     * Get a list of all categories and associated messages (if any).
+     *
+     * @return an observables map of categories to messages
+     */
+    @Query(
+            "select * from category " +
+                    "left join message on category.id = message.categoryId " +
+                    "where message.custom = 0"
+    )
+    LiveData<Map<Category, List<Message>>> allWithDefaultMessages();
 }

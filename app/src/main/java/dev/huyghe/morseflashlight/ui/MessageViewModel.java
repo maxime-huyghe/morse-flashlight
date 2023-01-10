@@ -10,7 +10,6 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -31,29 +30,36 @@ public class MessageViewModel extends ViewModel {
 
     private final MessageRepository messageRepository;
     private final LiveData<List<Message>> allMessagesSorted;
+    private final LiveData<List<Message>> allDefaultMessagesSorted;
     private final FlashlightService flashlightService;
     private final MutableLiveData<Message> currentMessage;
     private final LiveData<List<Category>> allCategories;
     private final LiveData<List<Pair<Category, List<Message>>>> allCategoriesWithMessages;
+    private final MutableLiveData<Boolean> unlocked;
 
     @Inject
     public MessageViewModel(MessageRepository messageRepository, FlashlightService flashlightService) {
         this.messageRepository = messageRepository;
-        this.allMessagesSorted = messageRepository.getAllMessagesSorted();
+        this.allMessagesSorted = messageRepository.getAllMessagesSorted(true);
+        this.allDefaultMessagesSorted = messageRepository.getAllMessagesSorted(false);
         this.flashlightService = flashlightService;
         this.currentMessage = new MutableLiveData<>(new Message(""));
         this.allCategories = messageRepository.getAllCategories();
-        this.allCategoriesWithMessages = Transformations.map(
-                messageRepository.getAllCategoriesWithMessages(),
-                map -> {
-                    List<Pair<Category, List<Message>>> list = new ArrayList<>(map.size());
-                    for (Category category : map.keySet()) {
-                        list.add(new Pair<>(category, map.get(category)));
-                    }
-                    list.sort(Comparator.comparing(pair -> pair.first.getName()));
-                    Log.d(TAG, list.toString());
-                    return list;
-                }
+        this.unlocked = new MutableLiveData<>(false);
+        this.allCategoriesWithMessages = Transformations.switchMap(
+                unlocked,
+                unlocked -> Transformations.map(
+                        messageRepository.getAllCategoriesWithMessages(unlocked),
+                        map -> {
+                            List<Pair<Category, List<Message>>> list = new ArrayList<>(map.size());
+                            for (Category category : map.keySet()) {
+                                list.add(new Pair<>(category, map.get(category)));
+                            }
+                            list.sort(Comparator.comparing(pair -> pair.first.getName()));
+                            Log.d(TAG, list.toString());
+                            return list;
+                        }
+                )
         );
     }
 
@@ -61,7 +67,16 @@ public class MessageViewModel extends ViewModel {
      * A list of all messages, sorted by recency.
      */
     public LiveData<List<Message>> getAllMessages() {
-        return allMessagesSorted;
+        return Transformations.switchMap(
+                unlocked,
+                unlocked -> {
+                    if (unlocked) {
+                        return allMessagesSorted;
+                    } else {
+                        return allDefaultMessagesSorted;
+                    }
+                }
+        );
     }
 
     /**
@@ -115,5 +130,13 @@ public class MessageViewModel extends ViewModel {
 
     public void createCategory(String name) {
         messageRepository.createCategory(name);
+    }
+
+    public LiveData<Boolean> isUnlocked() {
+        return unlocked;
+    }
+
+    public void unlock() {
+        unlocked.setValue(true);
     }
 }

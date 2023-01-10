@@ -23,7 +23,7 @@ public class AppDatabaseHiltProvider {
         return Room.databaseBuilder(
                 applicationContext,
                 AppDatabase.class,
-                "Morse_2023-01-07.4"
+                "Morse_2023-01-10.1"
         ).build();
     }
 
