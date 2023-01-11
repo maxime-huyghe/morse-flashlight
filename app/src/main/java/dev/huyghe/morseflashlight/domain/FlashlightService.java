@@ -4,6 +4,7 @@ import static android.content.Context.CAMERA_SERVICE;
 
 import android.content.Context;
 import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.os.Handler;
 import android.os.Looper;
@@ -40,7 +41,7 @@ public class FlashlightService {
     private String cameraId;
 
     @Inject
-    public FlashlightService(@ApplicationContext  Context context) {
+    public FlashlightService(@ApplicationContext Context context) {
         this.context = context;
         cameraManager = (CameraManager) context.getSystemService(CAMERA_SERVICE);
         try {
@@ -72,7 +73,13 @@ public class FlashlightService {
     public synchronized void toggleFlashLight(boolean on) {
         try {
             flashlightEnabled = on;
-            cameraManager.setTorchMode(cameraId, on);
+            // Avoid crashes on emulator.
+            if (cameraManager
+                    .getCameraCharacteristics(cameraId)
+                    .get(CameraCharacteristics.FLASH_INFO_AVAILABLE)
+            ) {
+                cameraManager.setTorchMode(cameraId, on);
+            }
         } catch (CameraAccessException e) {
             Toast.makeText(context, "Couldn't enable the flashlight! I give up.", Toast.LENGTH_SHORT).show();
         }
