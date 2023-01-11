@@ -1,9 +1,18 @@
 package dev.huyghe.morseflashlight.ui.morse;
 
+import static android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG;
+import static android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
+
+import android.content.Intent;
+import android.hardware.biometrics.BiometricPrompt;
 import android.os.Bundle;
+import android.os.CancellationSignal;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -42,7 +51,29 @@ public class MorseActivity extends AppCompatActivity {
             }
         });
         binding.morseInputButtonUnlockCustomMessages.setOnClickListener(view -> {
-            messageViewModel.unlock();
+            BiometricPrompt.AuthenticationCallback callback = new BiometricPrompt.AuthenticationCallback() {
+                @Override
+                public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                    super.onAuthenticationSucceeded(result);
+                    messageViewModel.unlock();
+                }
+                @Override
+                public void onAuthenticationError(int errorCode, CharSequence errString) {
+                    super.onAuthenticationError(errorCode, errString);
+                    final Intent enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
+                    enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                            BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
+                    startActivity(enrollIntent);
+                }
+            };
+            new BiometricPrompt.Builder(this)
+                    .setTitle("Unlock your custom messages")
+                    .setAllowedAuthenticators(
+                            BIOMETRIC_STRONG
+                                    | DEVICE_CREDENTIAL
+                    )
+                    .build()
+                    .authenticate(new CancellationSignal(), ContextCompat.getMainExecutor(this), callback);
         });
 
         binding.morseInputButtonFlash.setOnClickListener(view -> {
